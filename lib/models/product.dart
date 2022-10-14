@@ -8,6 +8,7 @@ class Product {
   String? quantity;
   String? price;
   String? category;
+  String? company;
   String? docID;
 
 
@@ -18,6 +19,7 @@ class Product {
     this.quantity,
     this.price,
     this.category,
+    this.company,
     this.docID
   });
 
@@ -30,6 +32,7 @@ class Product {
         quantity: map["quantity"],
         price: map["price"],
         category: map['category'],
+        company: map['company'],
         docID: map['docID']
     );
   }
@@ -42,6 +45,7 @@ class Product {
       "quantity":quantity,
       "price":price,
       'category': category,
+      'company': company,
       'docID': docID
     };
   }

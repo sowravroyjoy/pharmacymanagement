@@ -211,11 +211,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
                                         'Last updated',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -228,11 +228,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
                                         'Name',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -245,11 +245,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
                                         'Quantity',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -262,11 +262,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
                                         'Price',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -279,11 +279,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
                                       child: Text(
                                         'Category',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -296,11 +296,28 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                 child: Container(
                                   child: Center(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(5.0),
+                                      child: Text(
+                                        'Company',
+                                        style: TextStyle(
+                                            fontSize: 10.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
                                       child: Text(
                                         'Delete',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 10.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -320,15 +337,15 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
                                           (storedocs[i]["timeStamp"] != null)
-                                              ? DateFormat('dd-MMM-yyyy').format(
+                                              ? DateFormat('dd-MM-yyyy').format(
                                               storedocs[i]["timeStamp"]
                                                   .toDate())
                                               : "Loading...",
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 10.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -340,11 +357,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
                                           storedocs[i]["name"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 10.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -356,11 +373,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
                                           storedocs[i]["quantity"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 10.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -372,11 +389,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
                                           storedocs[i]["price"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 10.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -388,11 +405,11 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
                                           storedocs[i]["category"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 10.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -404,7 +421,23 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
                                   child: Container(
                                     child: Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Text(
+                                          storedocs[i]["company"],
+                                          style: TextStyle(
+                                              fontSize: 10.0,
+                                              color: Colors.blue
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
                                         child:    IconButton(
                                           onPressed: () {
                                             showDialog(
@@ -460,115 +493,114 @@ class _StockDetailsMobileState extends State<StockDetailsMobile> {
           });
     }
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("assets/images/deshboard.jpg"),
-              fit: BoxFit.fill,
-              opacity: 0.4),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, '/');
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.blue
-                        ),
-                        child: Text(
-                          "Home",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.blue
                       ),
                       child: Text(
-                        "Total Products : $_totalProducts",
+                        "Home",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, MyRoutes.addStock);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.blue
-                        ),
-                        child: Text(
-                          "Add Stock",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blue
+                    ),
+                    child: Text(
+                      "Total Products : $_totalProducts",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, MyRoutes.addStock);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.blue
+                      ),
+                      child: Text(
+                        "Add Stock",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10,),
-              nameSearchField,
-              SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: prevButton,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: nextButton,
-                  )
                 ],
               ),
-              SizedBox(height: 10,),
-              _buildListView(),
-              SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'developed by MEET-TECH LAB,  meettechlab@gmail.com,  +8801755460159',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue),
+            ),
+            SizedBox(height: 10,),
+            nameSearchField,
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: prevButton,
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: nextButton,
+                )
+              ],
+            ),
+            SizedBox(height: 10,),
+            _buildListView(),
+            SizedBox(height: 20,),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                'developed by MEET-TECH LAB',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
               ),
-              SizedBox(height: 40,),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                'meettechlab@gmail.com, +8801755460159',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue),
+              ),
+            ),
+            SizedBox(height: 40,),
 
-            ],
-          ),
+          ],
         ),
       ),
     );

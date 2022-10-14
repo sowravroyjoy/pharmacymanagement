@@ -213,7 +213,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Date',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -230,7 +230,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Product',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -247,7 +247,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Quantity',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -264,7 +264,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Price',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -281,7 +281,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Buyer Name',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -298,7 +298,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Buyer Contact',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -315,7 +315,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                       child: Text(
                                         'Delete',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -343,7 +343,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                                   .toDate())
                                               : "Loading...",
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -359,7 +359,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["name"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -375,7 +375,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["quantity"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -391,7 +391,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["price"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -407,7 +407,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["buyerName"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -423,7 +423,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["buyerContact"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -472,7 +472,7 @@ class _SaleHistoryDesktopState extends State<SaleHistoryDesktop> {
                                           },
                                           icon: Icon(
                                             Icons.delete,
-                                            size: 15,
+                                            size: 20,
                                             color: Colors.blue,
                                           ),
                                         ),

@@ -215,7 +215,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Last updated',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -232,7 +232,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Name',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -249,7 +249,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Quantity',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -266,7 +266,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Price',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -283,7 +283,24 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Category',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Company',
+                                        style: TextStyle(
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -300,7 +317,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                       child: Text(
                                         'Delete',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -328,7 +345,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                                   .toDate())
                                               : "Loading...",
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -344,7 +361,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                         child: Text(
                                           storedocs[i]["name"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -360,7 +377,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                         child: Text(
                                           storedocs[i]["quantity"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -376,7 +393,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                         child: Text(
                                           storedocs[i]["price"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -392,7 +409,23 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                         child: Text(
                                           storedocs[i]["category"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
+                                              color: Colors.blue
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          storedocs[i]["company"],
+                                          style: TextStyle(
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -441,7 +474,7 @@ class _StockDetailsDesktopState extends State<StockDetailsDesktop> {
                                           },
                                           icon: Icon(
                                             Icons.delete,
-                                            size: 15,
+                                            size: 20,
                                             color: Colors.blue,
                                           ),
                                         ),

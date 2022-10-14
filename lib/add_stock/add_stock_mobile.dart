@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pharmacymanagement/utils/routes.dart';
 
+import '../models/company.dart';
 import '../models/product.dart';
 
 class AddStockMobile extends StatefulWidget {
@@ -22,6 +23,9 @@ class _AddStockMobileState extends State<AddStockMobile> {
   List<String> _categoryList = ["none","new category"];
   String? _chosenCategory;
 
+  List<String> _companyList = [];
+  String? _chosenCompany;
+
   List<String> _productList = ["new product"];
   String? _chosenProduct;
 
@@ -32,12 +36,29 @@ class _AddStockMobileState extends State<AddStockMobile> {
   String _selectedDoc = "";
   List<int> _indexList = [];
 
+  final _formKey2 = GlobalKey<FormState>();
+  final companyEditingController = new TextEditingController();
+  bool? _processC;
+  int? _countC;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _process = false;
     _count = 1;
+    _processC = false;
+    _countC = 1;
+    FirebaseFirestore.instance
+        .collection('company')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+       setState((){
+          _companyList.add(doc["name"]);
+       });
+      }
+    });
 
     FirebaseFirestore.instance
         .collection('products')
@@ -260,6 +281,44 @@ class _AddStockMobileState extends State<AddStockMobile> {
               });
             }));
 
+    DropdownMenuItem<String> buildMenuCompany(String item) => DropdownMenuItem(
+        value: item,
+        child: Text(
+          item,
+          style: TextStyle(color: Colors.blue),
+        ));
+
+    final companyDropdown = Container(
+        width: MediaQuery.of(context).size.width / 1.5,
+        child: DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.fromLTRB(
+                20,
+                15,
+                20,
+                15,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
+            ),
+            items: _companyList.map(buildMenuCompany).toList(),
+            hint: Text(
+              'Select Company',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.blue),
+            ),
+            value: _chosenCompany,
+            onChanged: (newValue) {
+              setState(() {
+                _chosenCompany = newValue;
+              });
+            }));
+
 
     DropdownMenuItem<String> buildMenuProduct(String item) => DropdownMenuItem(
         value: item,
@@ -303,6 +362,7 @@ class _AddStockMobileState extends State<AddStockMobile> {
                     priceEditingController.clear();
                     _chosenCategory = null;
                     _selectedDoc = "";
+                    _chosenCompany = null;
                   });
                 }else{
                   _newProduct = false;
@@ -317,6 +377,7 @@ class _AddStockMobileState extends State<AddStockMobile> {
                           priceEditingController.text = doc["price"];
                           _chosenCategory = doc["category"];
                           _selectedDoc = doc["docID"];
+                          _chosenCompany = doc["company"];
                         });
                       }
                     }
@@ -388,6 +449,294 @@ class _AddStockMobileState extends State<AddStockMobile> {
       ),
     );
 
+    final CollectionReference _collectionReference =
+    FirebaseFirestore.instance.collection("company");
+
+    Widget _buildListView() {
+      return StreamBuilder<QuerySnapshot>(
+          stream: _collectionReference.orderBy("timeStamp",  descending: true).snapshots().asBroadcastStream(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Something went Wrong'));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (!snapshot.hasData) {
+              return Center(
+                child: Text('Empty'),
+              );
+            } else {
+
+              final List storedocs = [];
+              snapshot.data!.docs
+                  .map((DocumentSnapshot document) {
+                Map a = document.data() as Map<String, dynamic>;
+                storedocs.add(a);
+                a['id'] = document.id;
+              }).toList();
+
+
+              return  Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                decoration: BoxDecoration(
+                    color: Colors.blue.shade100,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))
+                ),
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Table(
+                      border: TableBorder.all(),
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                      children: [
+                        TableRow(
+                            children: [
+                              TableCell(
+                                child: Container(
+                                  color: Colors.blue.shade300,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Name',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Container(
+                                  color: Colors.blue.shade300,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Delete',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]
+                        ),
+
+
+                        for(var i = 0 ; i< storedocs.length; i++)...[
+                          TableRow(
+                              children: [
+                                TableCell(
+                                  child: Container(
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          storedocs[i]["name"],
+                                          style: TextStyle(
+                                            fontSize: 10.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child:    IconButton(
+                                          onPressed: () {
+                                            FirebaseFirestore.instance
+                                                .collection('company')
+                                                .get()
+                                                .then((QuerySnapshot querySnapshot) {
+                                              for (var doc in querySnapshot.docs) {
+                                                if(doc["docID"] == storedocs[i]["docID"]){
+                                                  setState(() {
+                                                    doc.reference.delete();
+                                                  });
+                                                }
+                                              }
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.delete,
+                                            size: 15,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ]
+                          )
+                        ]
+                      ],
+                    )
+                ),
+              );
+            }
+          });
+    }
+
+    final companyField = Container(
+        width: MediaQuery.of(context).size.width / 1.5,
+        child: TextFormField(
+            cursorColor: Colors.blue,
+            autofocus: false,
+            controller: companyEditingController,
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              if(value!.isEmpty){
+                return ("company name cannot be empty!!");
+              }
+              return null;
+            },
+            onSaved: (value) {
+              companyEditingController.text = value!;
+            },
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.fromLTRB(
+                20,
+                15,
+                20,
+                15,
+              ),
+              labelText: 'Company Name',
+              labelStyle: TextStyle(color: Colors.blue),
+              floatingLabelStyle: TextStyle(color: Colors.blue),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
+            )));
+
+    final addCompanyButton = Material(
+      elevation: (_processC!) ? 0 : 5,
+      color: (_processC!) ? Colors.blue.shade800 : Colors.blue,
+      borderRadius: BorderRadius.circular(10),
+      child: MaterialButton(
+        padding: EdgeInsets.fromLTRB(
+          40,
+          10,
+          40,
+          10,
+        ),
+        minWidth: 10,
+        onPressed: () {
+          setState(() {
+            _processC = true;
+            _countC = (_countC! - 1);
+          });
+          (_countC! < 0)
+              ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.red, content: Text("Wait Please!!")))
+              : AddCompany();
+        },
+        child: (_processC!)
+            ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Processing',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Center(
+                child: SizedBox(
+                    height: 10,
+                    width: 10,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ))),
+          ],
+        )
+            : Text(
+          'Add Company',
+          textAlign: TextAlign.center,
+          style:
+          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+
+    final _companyButton = Container(
+        decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(10)
+        ),
+        child: TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) =>
+                    AlertDialog(
+                      backgroundColor: Colors.blue.shade100,
+                      title: Center(child: Text("New Company")),
+                      titleTextStyle: TextStyle(fontSize: 15),
+                      scrollable: true,
+                      content: SingleChildScrollView(
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Form(
+                              key: _formKey2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  companyField,
+                                  SizedBox(height: 10,),
+                                  addCompanyButton,
+                                  SizedBox(height: 20,),
+                                  _buildListView(),
+                                  SizedBox(height: 40,),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+              );
+            },
+            child: Text(
+              "Company",
+              style: TextStyle(
+                  color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),
+            )
+        )
+    );
+
+
+
+
+
 
     return Scaffold(
       body: Center(
@@ -414,6 +763,8 @@ class _AddStockMobileState extends State<AddStockMobile> {
                   quantityField,
                   SizedBox(height: 10,),
                   priceField,
+                  SizedBox(height: 10,),
+                  companyDropdown,
                   SizedBox(height: 10,),
                   categoryDropdown,
                   SizedBox(height: 10,),
@@ -463,6 +814,8 @@ class _AddStockMobileState extends State<AddStockMobile> {
                           ),
                         ),
                       ),
+                      SizedBox(width: 10,),
+                      _companyButton
                     ],
                   ),
                   SizedBox(height: 40,),
@@ -541,6 +894,7 @@ class _AddStockMobileState extends State<AddStockMobile> {
             (_chosenCategory != "new category") ?
             product.category = _chosenCategory.toString() : product.category =
                 categoryEditingController.text.toString().toLowerCase();
+            product.company = _chosenCompany;
             product.docID = ref.id;
             ref.set(product.toMap()).whenComplete(() {
               (_selectedDoc != "")?ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -561,6 +915,7 @@ class _AddStockMobileState extends State<AddStockMobile> {
                 _chosenProduct = null;
                 _newCategory = false;
                 _newProduct = false;
+                _chosenCompany = null;
               });
 
               FirebaseFirestore.instance
@@ -607,6 +962,71 @@ class _AddStockMobileState extends State<AddStockMobile> {
           }
         });
       });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red, content: Text("Something Wrong!!")));
+      setState(() {
+        _process = false;
+        _count = 1;
+      });
+    }
+  }
+  void AddCompany()  async{
+    bool _unique = true;
+    if (_formKey2.currentState!.validate()) {
+
+        FirebaseFirestore.instance
+            .collection('company')
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            if (doc["name"].toString().toLowerCase() ==
+                companyEditingController.text.toString().toLowerCase()) {
+              _unique = false;
+            }
+          }
+
+          if (_unique) {
+            var ref = FirebaseFirestore.instance.collection("company")
+                .doc();
+            var temp = companyEditingController.text;
+            Company company = Company();
+            company.timeStamp = FieldValue.serverTimestamp();
+            company.name = companyEditingController.text;
+            company.docID = ref.id;
+            ref.set(company.toMap()).whenComplete(() {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text(
+                      "New Company Added!!")));
+              setState(() {
+                _processC = false;
+                _countC = 1;
+                companyEditingController.clear();
+                _companyList.add(temp);
+              });
+            }).onError((error, stackTrace) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text("Something Wrong!!")));
+              setState(() {
+                _process = false;
+                _count = 1;
+
+              });
+            });
+          } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+          "Company is already exists!! Please add another company!!")));
+
+            setState(() {
+              _process = false;
+              _count = 1;
+            });
+          }
+        });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red, content: Text("Something Wrong!!")));

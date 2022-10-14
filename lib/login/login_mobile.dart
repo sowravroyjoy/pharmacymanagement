@@ -195,7 +195,8 @@ class _LoginMobileState extends State<LoginMobile> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 20),
+                                      fontSize: 20
+                                  ),
                                 ),
                               ),
                             ),
@@ -213,12 +214,21 @@ class _LoginMobileState extends State<LoginMobile> {
                           ),
                           addButton,
                           SizedBox(
-                            height: 10,
+                            height: 30,
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(3.0),
                             child: Text(
-                              'developed by MEET-TECH LAB,  meettechlab@gmail.com,  +8801755460159',
+                              'developed by MEET-TECH LAB',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Text(
+                              'meettechlab@gmail.com, +8801755460159',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue),

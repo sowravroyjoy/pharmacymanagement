@@ -213,7 +213,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                       child: Text(
                                         'Date',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -230,7 +230,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                       child: Text(
                                         'Reason Type',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -247,7 +247,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                       child: Text(
                                         'Reason',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -264,7 +264,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                       child: Text(
                                         'Amount',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -281,7 +281,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                       child: Text(
                                         'Delete',
                                         style: TextStyle(
-                                            fontSize: 15.0,
+                                            fontSize: 20.0,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blue
                                         ),
@@ -309,7 +309,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                                   .toDate())
                                               : "Loading...",
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -325,7 +325,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["reasonType"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -341,7 +341,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["reason"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -357,7 +357,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                         child: Text(
                                           storedocs[i]["amount"],
                                           style: TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: 15.0,
                                               color: Colors.blue
                                           ),
                                         ),
@@ -406,7 +406,7 @@ class _ExpenseHistoryDesktopState extends State<ExpenseHistoryDesktop> {
                                           },
                                           icon: Icon(
                                             Icons.delete,
-                                            size: 15,
+                                            size: 20,
                                             color: Colors.blue,
                                           ),
                                         ),
