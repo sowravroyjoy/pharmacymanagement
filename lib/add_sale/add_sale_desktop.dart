@@ -27,6 +27,8 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
 
   bool? _process;
   int? _count;
+  bool? _process2;
+  int? _count2;
   List<Product> _storeDocs = [];
   int _totalAmount = 0;
 
@@ -36,6 +38,8 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
     super.initState();
     _process = false;
     _count = 1;
+    _process2 = false;
+    _count2 = 1;
 
     FirebaseFirestore.instance
         .collection('products')
@@ -266,7 +270,62 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
           ],
         )
             : Text(
-          '  Generate PDF  ',
+          '  Save With Invoice  ',
+          textAlign: TextAlign.center,
+          style:
+          TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+    final addButtonNoInvoice = Material(
+      elevation: (_process2!) ? 0 : 5,
+      color: (_process2!) ? Colors.blue.shade800 : Colors.blue,
+      borderRadius: BorderRadius.circular(10),
+      child: MaterialButton(
+        padding: EdgeInsets.fromLTRB(
+          100,
+          20,
+          100,
+          20,
+        ),
+        minWidth: 20,
+        onPressed: () {
+          setState(() {
+            _process2 = true;
+            _count2 = (_count2! - 1);
+          });
+          (_count2! < 0)
+              ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.red, content: Text("Wait Please!!")))
+              : AddDataNoInvoice();
+        },
+        child: (_process2!)
+            ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Wait',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Center(
+                child: SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ))),
+          ],
+        )
+            : Text(
+          '  Save  ',
           textAlign: TextAlign.center,
           style:
           TextStyle(color: Colors.white),
@@ -556,6 +615,8 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
                                   SizedBox(height: 10,),
                                   buyerContactField,
                                   SizedBox(height: 20,),
+                                  addButtonNoInvoice,
+                                  SizedBox(height: 10,),
                                   addButton,
                                   SizedBox(height: 40,),
                                 ],
@@ -721,7 +782,54 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
         }
         Navigator.of(context).pop();
       }).whenComplete(() {
+        var temList = [];
         final _list = <ProductItem>[];
+        FirebaseFirestore.instance
+            .collection('products')
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+                temList.add(doc);
+            }
+
+          }).whenComplete((){
+          for ( QueryDocumentSnapshot<Object> ol in temList){
+            for ( var ne in _storeDocs){
+              if (ol["docID"] == ne.docID){
+                var ref = FirebaseFirestore.instance.collection("products")
+                    .doc(ol["docID"]);
+                Product product = Product();
+                product.timeStamp = FieldValue.serverTimestamp();
+                product.productID = ol["productID"];
+                product.name = ol["name"];
+                product.quantity = (int.parse(ol["quantity"].toString()) - int.parse(ne.quantity.toString())).toString();
+                product.price = ol["price"];
+                product.category = ol["category"];
+                product.company = ol["company"];
+                product.docID = ol["docID"];
+                ref.set(product.toMap()).onError((error, stackTrace){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                          "Something is wrong!!")));
+                  setState(() {
+                    _process = false;
+                    _count = 1;
+                  });
+                }).whenComplete((){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green, content: Text("Stock recalculated!!")));
+                  _storeDocs.clear();
+                });
+              }
+            }
+          }
+
+        });
+
+
+
+
         for (Product i in _storeDocs) {
           _list.add(ProductItem(
             i.name.toString(),
@@ -742,7 +850,100 @@ class _AddSaleDesktopState extends State<AddSaleDesktop> {
         setState(() {
           _process = false;
           _count = 1;
-          _storeDocs.clear();
+          // _storeDocs.clear();
+          _chosenProduct = null;
+          quantityEditingController.clear();
+          buyerContactEditingController.clear();
+          buyerNameEditingController.clear();
+          _totalAmount = 0;
+        });
+      });
+    }
+  }
+
+  void AddDataNoInvoice() async {
+    if (_formKey2.currentState!.validate()) {
+      FirebaseFirestore.instance
+          .collection('products')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          for (Product i in _storeDocs) {
+            if (doc["docID"].toString().toLowerCase() ==
+                i.docID.toString().toLowerCase()) {
+              var ref = FirebaseFirestore.instance.collection("sales")
+                  .doc();
+              Sale sale = Sale();
+              sale.timeStamp = FieldValue.serverTimestamp();
+              sale.productID = doc["productID"] + "-" + "sale";
+              sale.name = i.name;
+              sale.quantity = i.quantity;
+              sale.price = i.price;
+              sale.category = doc["category"];
+              sale.buyerName = buyerNameEditingController.text;
+              sale.buyerContact = buyerContactEditingController.text;
+              sale.docID = ref.id;
+              ref.set(sale.toMap()).onError((error, stackTrace) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(
+                        "Something is wrong!!")));
+                setState(() {
+                  _process2 = false;
+                  _count2 = 1;
+                });
+              });
+            }
+          }
+        }
+        Navigator.of(context).pop();
+      }).whenComplete(() {
+        var temList = [];
+        FirebaseFirestore.instance
+            .collection('products')
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            temList.add(doc);
+          }
+
+        }).whenComplete((){
+          for ( QueryDocumentSnapshot<Object> ol in temList){
+            for ( var ne in _storeDocs){
+              if (ol["docID"] == ne.docID){
+                var ref = FirebaseFirestore.instance.collection("products")
+                    .doc(ol["docID"]);
+                Product product = Product();
+                product.timeStamp = FieldValue.serverTimestamp();
+                product.productID = ol["productID"];
+                product.name = ol["name"];
+                product.quantity = (int.parse(ol["quantity"].toString()) - int.parse(ne.quantity.toString())).toString();
+                product.price = ol["price"];
+                product.category = ol["category"];
+                product.company = ol["company"];
+                product.docID = ol["docID"];
+                ref.set(product.toMap()).onError((error, stackTrace){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                          "Something is wrong!!")));
+                  setState(() {
+                    _process2 = false;
+                    _count2 = 1;
+                  });
+                }).whenComplete((){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green, content: Text("Stock recalculated!!")));
+                  _storeDocs.clear();
+                });
+              }
+            }
+          }
+
+        });
+        setState(() {
+          _process2 = false;
+          _count2 = 1;
           _chosenProduct = null;
           quantityEditingController.clear();
           buyerContactEditingController.clear();

@@ -1,10 +1,13 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pharmacymanagement/add_expense/add_expense_page.dart';
 import 'package:pharmacymanagement/add_sale/add_sale_page.dart';
 import 'package:pharmacymanagement/add_stock/add_stock_page.dart';
+import 'package:pharmacymanagement/all_company/all_company_page.dart';
+import 'package:pharmacymanagement/company_details/company_details_page.dart';
 import 'package:pharmacymanagement/expense_history/expense_history_page.dart';
 import 'package:pharmacymanagement/login/login_page.dart';
 import 'package:pharmacymanagement/sale_history/sale_history_page.dart';
@@ -73,6 +76,14 @@ class MyApp extends StatelessWidget {
         MyRoutes.saleHistory: (context) => SaleHistoryPage(),
         MyRoutes.addExpense: (context) => AddExpensePage(),
         MyRoutes.expenseHistory: (context) => ExpenseHistoryPage(),
+        MyRoutes.allCompany: (context) => AllCompanyPage(),
+      },
+
+      onGenerateRoute: (settings) {
+        final args = settings.arguments as QueryDocumentSnapshot<Object>;
+        if (settings.name == MyRoutes.companyDetails){
+          return MaterialPageRoute(builder: (context) => CompanyDetailsPage(company: args));
+        }
       },
     );
   }

@@ -721,6 +721,50 @@ class _AddSaleMobileState extends State<AddSaleMobile> {
         }
         Navigator.of(context).pop();
       }).whenComplete(() {
+        var temList = [];
+        FirebaseFirestore.instance
+            .collection('products')
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            temList.add(doc);
+          }
+
+        }).whenComplete((){
+          for ( QueryDocumentSnapshot<Object> ol in temList){
+            for ( var ne in _storeDocs){
+              if (ol["docID"] == ne.docID){
+                var ref = FirebaseFirestore.instance.collection("products")
+                    .doc(ol["docID"]);
+                Product product = Product();
+                product.timeStamp = FieldValue.serverTimestamp();
+                product.productID = ol["productID"];
+                product.name = ol["name"];
+                product.quantity = (int.parse(ol["quantity"].toString()) - int.parse(ne.quantity.toString())).toString();
+                product.price = ol["price"];
+                product.category = ol["category"];
+                product.company = ol["company"];
+                product.docID = ol["docID"];
+                ref.set(product.toMap()).onError((error, stackTrace){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                          "Something is wrong!!")));
+                  setState(() {
+                    _process = false;
+                    _count = 1;
+                  });
+                }).whenComplete((){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green, content: Text("Stock recalculated!!")));
+                  _storeDocs.clear();
+                });
+              }
+            }
+          }
+
+        });
+
         final _list = <ProductItem>[];
         for (Product i in _storeDocs) {
           _list.add(ProductItem(
@@ -742,7 +786,7 @@ class _AddSaleMobileState extends State<AddSaleMobile> {
         setState(() {
           _process = false;
           _count = 1;
-          _storeDocs.clear();
+          // _storeDocs.clear();
           _chosenProduct = null;
           quantityEditingController.clear();
           buyerContactEditingController.clear();

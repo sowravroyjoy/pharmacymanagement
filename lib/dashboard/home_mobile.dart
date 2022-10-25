@@ -53,6 +53,10 @@ class _HomeMobileState extends State<HomeMobile> {
                 getImageButton(
                     () {Navigator.pushNamed(context, MyRoutes.expenseHistory);}, 'assets/images/storage.jpg', "Expense History"),
                 SizedBox(
+                  height: 20,
+                ),
+                getImageButton(() { Navigator.pushNamed(context, MyRoutes.allCompany);}, 'assets/images/storage.jpg', "All Company"),
+                SizedBox(
                   height: 40,
                 ),
                 Text(

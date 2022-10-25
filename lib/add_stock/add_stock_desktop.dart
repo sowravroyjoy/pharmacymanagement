@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pharmacymanagement/company_details/company_details_page.dart';
 
 import '../models/company.dart';
 import '../models/product.dart';
@@ -19,11 +20,12 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
   final quantityEditingController = new TextEditingController();
   final priceEditingController = new TextEditingController();
   final categoryEditingController = new TextEditingController();
+  final companyEditingController = new TextEditingController();
 
   List<String> _categoryList = ["none","new category"];
   String? _chosenCategory;
 
-  List<String> _companyList = [];
+  List<String> _companyList = ["new company"];
   String? _chosenCompany;
 
   List<String> _productList = ["new product"];
@@ -33,13 +35,10 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
   int? _count;
   bool _newCategory = false;
   bool _newProduct = false;
+  bool _newCompany = false;
   String _selectedDoc = "";
+  String _selectedDocPrice = "";
   List<int> _indexList = [];
-
-  final _formKey2 = GlobalKey<FormState>();
-  final companyEditingController = new TextEditingController();
-  bool? _processC;
-  int? _countC;
 
   @override
   void initState() {
@@ -48,16 +47,16 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
     _process = false;
     _count = 1;
 
-    _processC = false;
-    _countC = 1;
     FirebaseFirestore.instance
         .collection('company')
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
-        setState((){
-          _companyList.add(doc["name"]);
-        });
+        if (doc["companyID"].toString().split(":").last == "1") {
+          setState(() {
+            _companyList.add(doc["name"]);
+          });
+        }
       }
     });
 
@@ -317,10 +316,50 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
             onChanged: (newValue) {
               setState(() {
                 _chosenCompany = newValue;
+                if(newValue == "new company"){
+                  _newCompany = true;
+                }else{
+                  _newCompany = false;
+                }
               });
             }));
 
 
+    final companyField = Container(
+        width: MediaQuery.of(context).size.width / 3,
+        child: TextFormField(
+            cursorColor: Colors.blue,
+            autofocus: false,
+            controller: companyEditingController,
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              if(_chosenCompany == "new company" && value!.isEmpty){
+                return ("company cannot be empty!!");
+              }
+              return null;
+            },
+            onSaved: (value) {
+              companyEditingController.text = value!;
+            },
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.fromLTRB(
+                20,
+                15,
+                20,
+                15,
+              ),
+              labelText: 'Company',
+              labelStyle: TextStyle(color: Colors.blue),
+              floatingLabelStyle: TextStyle(color: Colors.blue),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
+            )));
 
 
     DropdownMenuItem<String> buildMenuProduct(String item) => DropdownMenuItem(
@@ -365,6 +404,7 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
                     priceEditingController.clear();
                     _chosenCategory = null;
                     _selectedDoc = "";
+                    _selectedDocPrice = "";
                     _chosenCompany = null;
                   });
                 }else{
@@ -380,6 +420,7 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
                           priceEditingController.text = doc["price"];
                           _chosenCategory = doc["category"];
                           _selectedDoc = doc["docID"];
+                          _selectedDocPrice = doc["quantity"];
                           _chosenCompany = doc["company"];
                         });
                       }
@@ -452,238 +493,8 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
       ),
     );
 
-    final CollectionReference _collectionReference =
-    FirebaseFirestore.instance.collection("company");
-
-    Widget _buildListView() {
-      return StreamBuilder<QuerySnapshot>(
-          stream: _collectionReference.orderBy("timeStamp",  descending: true).snapshots().asBroadcastStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(child: Text('Something went Wrong'));
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (!snapshot.hasData) {
-              return Center(
-                child: Text('Empty'),
-              );
-            } else {
-
-              final List storedocs = [];
-              snapshot.data!.docs
-                  .map((DocumentSnapshot document) {
-                Map a = document.data() as Map<String, dynamic>;
-                storedocs.add(a);
-                a['id'] = document.id;
-              }).toList();
 
 
-              return  Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-                decoration: BoxDecoration(
-                    color: Colors.blue.shade100,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))
-                ),
-                child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Table(
-                      border: TableBorder.all(),
-                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(
-                            children: [
-                              TableCell(
-                                child: Container(
-                                  color: Colors.blue.shade300,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Name',
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              TableCell(
-                                child: Container(
-                                  color: Colors.blue.shade300,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Delete',
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ]
-                        ),
-
-
-                        for(var i = 0 ; i< storedocs.length; i++)...[
-                          TableRow(
-                              children: [
-                                TableCell(
-                                  child: Container(
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          storedocs[i]["name"],
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Container(
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child:    IconButton(
-                                          onPressed: () {
-                                            FirebaseFirestore.instance
-                                                .collection('company')
-                                                .get()
-                                                .then((QuerySnapshot querySnapshot) {
-                                              for (var doc in querySnapshot.docs) {
-                                                if(doc["docID"] == storedocs[i]["docID"]){
-                                                  setState(() {
-                                                    doc.reference.delete();
-                                                  });
-                                                }
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ]
-                          )
-                        ]
-                      ],
-                    )
-                ),
-              );
-            }
-          });
-    }
-
-    final companyField = Container(
-        width: MediaQuery.of(context).size.width / 3,
-        child: TextFormField(
-            cursorColor: Colors.blue,
-            autofocus: false,
-            controller: companyEditingController,
-            keyboardType: TextInputType.name,
-            validator: (value) {
-              if(value!.isEmpty){
-                return ("company name cannot be empty!!");
-              }
-              return null;
-            },
-            onSaved: (value) {
-              companyEditingController.text = value!;
-            },
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(
-                20,
-                15,
-                20,
-                15,
-              ),
-              labelText: 'Company Name',
-              labelStyle: TextStyle(color: Colors.blue),
-              floatingLabelStyle: TextStyle(color: Colors.blue),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: Colors.blue),
-              ),
-            )));
-
-    final addCompanyButton = Material(
-      elevation: (_processC!) ? 0 : 5,
-      color: (_processC!) ? Colors.blue.shade800 : Colors.blue,
-      borderRadius: BorderRadius.circular(30),
-      child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(
-          120,
-          25,
-          120,
-          25,
-        ),
-        minWidth: 20,
-        onPressed: () {
-          setState(() {
-            _processC = true;
-            _countC = (_countC! - 1);
-          });
-          (_countC! < 0)
-              ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.red, content: Text("Wait Please!!")))
-              : AddCompany();
-        },
-        child: (_processC!)
-            ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Processing',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Center(
-                child: SizedBox(
-                    height: 10,
-                    width: 10,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ))),
-          ],
-        )
-            : Text(
-          'Add Company',
-          textAlign: TextAlign.center,
-          style:
-          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
 
     final _companyButton = Container(
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -693,38 +504,7 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
         ),
         child: TextButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) =>
-                    AlertDialog(
-                      backgroundColor: Colors.blue.shade100,
-                      title: Center(child: Text("New Company")),
-                      titleTextStyle: TextStyle(fontSize: 15),
-                      scrollable: true,
-                      content: SingleChildScrollView(
-                        child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Form(
-                              key: _formKey2,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  companyField,
-                                  SizedBox(height: 20,),
-                                  addCompanyButton,
-                                  SizedBox(height: 40,),
-                                  _buildListView(),
-                                  SizedBox(height: 40,),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-              );
+              Navigator.pushNamed(context, MyRoutes.allCompany);
             },
             child: Text(
               "Company",
@@ -753,9 +533,8 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  _newProduct? nameField:Text(""),
+                  _newProduct? nameField:SizedBox(height: 0,),
                   SizedBox(height: 10,),
                   productDropdown,
                   SizedBox(height: 10,),
@@ -765,9 +544,11 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
                   SizedBox(height: 10,),
                   companyDropdown,
                   SizedBox(height: 10,),
+              _newCompany? companyField:SizedBox(height: 0,),
+                  _newCompany? SizedBox(height: 10,):SizedBox(height: 0,),
                   categoryDropdown,
                   SizedBox(height: 10,),
-                  _newCategory? categoryField:Text(""),
+                  _newCategory? categoryField:SizedBox(height: 0,),
                   SizedBox(height: 10,),
                   addButton,
                   SizedBox(height: 10,),
@@ -817,7 +598,7 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
                       _companyButton
                     ],
                   ),
-                  SizedBox(height: 40,),
+                  SizedBox(height: 20,),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -827,7 +608,6 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
                           color: Colors.blue),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -843,7 +623,7 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
     int _productID = 1;
     bool _unique = true;
     if (_formKey.currentState!.validate() &&
-        _chosenCategory != null && _chosenProduct != null) {
+        _chosenCategory != null && _chosenProduct != null && _chosenCompany != null) {
 
       FirebaseFirestore.instance
           .collection('products')
@@ -893,62 +673,126 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
             (_chosenCategory != "new category") ?
             product.category = _chosenCategory.toString() : product.category =
                 categoryEditingController.text.toString().toLowerCase();
-            product.company = _chosenCompany;
+            (_chosenCompany == 'new company')?product.company = companyEditingController.text:product.company = _chosenCompany;
             product.docID = ref.id;
             ref.set(product.toMap()).whenComplete(() {
-              (_selectedDoc != "")?ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text(
-                      "Product Updated!!"))):ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text(
-                      "New Product Added!!")));
-              setState(() {
-                _process = false;
-                _count = 1;
-                nameEditingController.clear();
-                quantityEditingController.clear();
-                priceEditingController.clear();
-                categoryEditingController.clear();
-                _chosenCategory = null;
-                _chosenProduct = null;
-                _newCategory = false;
-                _newProduct = false;
-                _chosenCompany = null;
-              });
-
-              FirebaseFirestore.instance
-                  .collection('products')
-                  .get()
-                  .then((QuerySnapshot querySnapshot) {
-                setState(() {
-                  _categoryList.clear();
-                  _categoryList.add("none");
-                  _categoryList.add("new category");
-                  _productList.clear();
-                  _productList.add("new product");
-                });
-                for (var doc in querySnapshot.docs) {
-                  if (doc["productID"].toString().split(":").last == "1"&& doc["productID"].toString().split(":").first != "none") {
+              if (_chosenCompany == 'new company'){
+                var ref3 = FirebaseFirestore.instance.collection("company")
+                    .doc();
+                Company company = Company();
+                company.timeStamp = FieldValue.serverTimestamp();
+                company.companyID = "${companyEditingController.text}:1";
+                company.name = companyEditingController.text;
+                company.itemName = "Created";
+                company.itemStatus = "Created";
+                company.itemPrice = "0";
+                company.itemQuantity = "0";
+                company.docID = ref.id;
+                ref3.set(company.toMap()).whenComplete((){
+                  var ref2 = FirebaseFirestore.instance.collection("company")
+                      .doc();
+                  Company company = Company();
+                  company.timeStamp = FieldValue.serverTimestamp();
+                  company.companyID = "${companyEditingController.text}:2";
+                  company.name = companyEditingController.text;
+                  (_chosenProduct != "new product") ?
+                  company.itemName = _chosenProduct.toString() : company.itemName =
+                      nameEditingController.text;
+                  company.itemStatus = "Stock";
+                  company.itemPrice = priceEditingController.text;
+                  company.itemQuantity = quantityEditingController.text;
+                  company.docID = ref.id;
+                  ref2.set(company.toMap()).whenComplete(() {
+                    (_selectedDoc != "")?ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text(
+                            "Product Updated!!"))):ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text(
+                            "New Product Added!!")));
                     setState(() {
-                      _categoryList.add(doc["category"]);
+                      _process = false;
+                      _count = 1;
+                      (_chosenProduct == "new product") ? _productList.add(nameEditingController.text):null;
+                      (_chosenCategory == "new category") ? _categoryList.add(categoryEditingController.text):null;
+                      nameEditingController.clear();
+                      quantityEditingController.clear();
+                      priceEditingController.clear();
+                      categoryEditingController.clear();
+                      _chosenCategory = null;
+                      _chosenProduct = null;
+                      _newCategory = false;
+                      _newProduct = false;
+                      _chosenCompany = null;
+                      companyEditingController.clear();
                     });
-                  }
-                  setState(() {
-                    _productList.add(doc["name"]);
+                  }).onError((error, stackTrace){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text("Something Wrong!!")));
+                    setState(() {
+                      _process = false;
+                      _count= 1;
+                    });
                   });
-                }
-              });
-            }).onError((error, stackTrace) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Colors.red,
-                  content: Text("Something Wrong!!")));
-              setState(() {
-                _process = false;
-                _count = 1;
+                });
+              }else{
+                var ref2 = FirebaseFirestore.instance.collection("company")
+                    .doc();
+                Company company = Company();
+                company.timeStamp = FieldValue.serverTimestamp();
+                company.companyID = "${_chosenCompany}:2";
+                company.name = _chosenCompany;
+                (_chosenProduct != "new product") ?
+                company.itemName = _chosenProduct.toString() : company.itemName =
+                    nameEditingController.text;
+                company.itemStatus = "Stock";
+                company.itemPrice = priceEditingController.text;
+                (_selectedDoc == "")?company.itemQuantity = quantityEditingController.text:company.itemQuantity = (int.parse(quantityEditingController.text)-int.parse(_selectedDocPrice).abs()).toString();
+                company.docID = ref.id;
+                ref2.set(company.toMap()).whenComplete(() {
+                  (_selectedDoc != "")?ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text(
+                          "Product Updated!!"))):ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text(
+                          "New Product Added!!")));
+                  setState(() {
+                    _process = false;
+                    _count = 1;
+                    (_chosenProduct == "new product") ? _productList.add(nameEditingController.text):null;
+                    (_chosenCategory == "new category") ? _categoryList.add(categoryEditingController.text):null;
+                    nameEditingController.clear();
+                    quantityEditingController.clear();
+                    priceEditingController.clear();
+                    categoryEditingController.clear();
+                    _chosenCategory = null;
+                    _chosenProduct = null;
+                    _newCategory = false;
+                    _newProduct = false;
+                    _chosenCompany = null;
+                  });
+                }).onError((error, stackTrace){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text("Something Wrong!!")));
+                  setState(() {
+                    _process = false;
+                    _count= 1;
+                  });
+                });
+              }
+              }).onError((error, stackTrace) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text("Something Wrong!!")));
+                setState(() {
+                  _process= false;
+                  _count= 1;
 
+                });
               });
-            });
           } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.red,
@@ -960,71 +804,6 @@ class _AddStockDesktopState extends State<AddStockDesktop> {
             });
           }
         });
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red, content: Text("Something Wrong!!")));
-      setState(() {
-        _process = false;
-        _count = 1;
-      });
-    }
-  }
-  void AddCompany()  async{
-    bool _unique = true;
-    if (_formKey2.currentState!.validate()) {
-
-      FirebaseFirestore.instance
-          .collection('company')
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          if (doc["name"].toString().toLowerCase() ==
-              companyEditingController.text.toString().toLowerCase()) {
-            _unique = false;
-          }
-        }
-
-        if (_unique) {
-          var ref = FirebaseFirestore.instance.collection("company")
-              .doc();
-          var temp = companyEditingController.text;
-          Company company = Company();
-          company.timeStamp = FieldValue.serverTimestamp();
-          company.name = companyEditingController.text;
-          company.docID = ref.id;
-          ref.set(company.toMap()).whenComplete(() {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                backgroundColor: Colors.green,
-                content: Text(
-                    "New Company Added!!")));
-            setState(() {
-              _processC = false;
-              _countC = 1;
-              companyEditingController.clear();
-              _companyList.add(temp);
-            });
-          }).onError((error, stackTrace) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                backgroundColor: Colors.red,
-                content: Text("Something Wrong!!")));
-            setState(() {
-              _process = false;
-              _count = 1;
-
-            });
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.red,
-              content: Text(
-                  "Company is already exists!! Please add another company!!")));
-
-          setState(() {
-            _process = false;
-            _count = 1;
-          });
-        }
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

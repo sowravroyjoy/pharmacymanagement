@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/cash.dart';
+import '../models/company.dart';
 import '../utils/routes.dart';
 
 class AddExpenseDesktop extends StatefulWidget {
@@ -20,11 +21,15 @@ class _AddExpenseDesktopState extends State<AddExpenseDesktop> {
 
   bool? _process;
   int? _count;
+  bool isCompany = false;
 
   int _totalAmount = 0;
 
   List<String> _cashList = ["Deposit", "Withdraw"];
   String? _chosenCash;
+
+  List<String> _companyList = [];
+  String? _chosenCompany;
 
   @override
   void initState() {
@@ -63,10 +68,69 @@ class _AddExpenseDesktopState extends State<AddExpenseDesktop> {
       }
     });
 
+    FirebaseFirestore.instance
+        .collection('company')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        if (doc["companyID"]
+            .toString()
+            .split(":")
+            .last == "1") {
+          setState(() {
+            _companyList.add(doc["name"]);
+          });
+        }
+      }
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+    DropdownMenuItem<String> buildMenuCompany(String item) => DropdownMenuItem(
+        value: item,
+        child: Text(
+          item,
+          style: TextStyle(color: Colors.blue),
+        ));
+
+    final companyDropdown = Container(
+        width: MediaQuery.of(context).size.width / 2.5,
+        child: DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.fromLTRB(
+                20,
+                15,
+                20,
+                15,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blue),
+              ),
+            ),
+            items: _companyList.map(buildMenuCompany).toList(),
+            hint: Text(
+              'Select Company',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.blue),
+            ),
+            value: _chosenCompany,
+            onChanged: (newValue) {
+              setState(() {
+                _chosenCompany = newValue;
+                if (_chosenCompany != null){
+                  isCompany = true;
+                }else{
+                  isCompany = false;
+                }
+              });
+            }));
 
     DropdownMenuItem<String> buildMenuCash(String item) =>
         DropdownMenuItem(
@@ -282,9 +346,11 @@ class _AddExpenseDesktopState extends State<AddExpenseDesktop> {
                   SizedBox(height: 20,),
                   cashDropdown,
                   SizedBox(height: 10,),
-                  reasonField,
+                  companyDropdown,
                   SizedBox(height: 10,),
                   cashField,
+                  SizedBox(height: 10,),
+                  isCompany?Text(""):reasonField,
                   SizedBox(height: 30,),
                   addButton,
                   SizedBox(height: 10,),
@@ -358,29 +424,47 @@ class _AddExpenseDesktopState extends State<AddExpenseDesktop> {
       Cash cash = Cash();
       cash.timeStamp = FieldValue.serverTimestamp();
       cash.reasonType = _chosenCash;
-      cash.reason = reasonEditingController.text;
+      isCompany?cash.reason = _chosenCompany:cash.reason = reasonEditingController.text;
       cash.amount = cashEditingController.text;
       cash.docID = ref.id;
       ref.set(cash.toMap()).whenComplete(() {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-                "Entry Successful!!")));
-        setState(() {
-          _process = false;
-          _count = 1;
-          if(_chosenCash == "Deposit"){
-            _totalAmount = _totalAmount + int.parse(cashEditingController.text);
-            cashEditingController.clear();
-            reasonEditingController.clear();
-            _chosenCash = null;
-          }else{
-            _totalAmount = _totalAmount - int.parse(cashEditingController.text);
-            cashEditingController.clear();
-            reasonEditingController.clear();
-            _chosenCash = null;
-          }
-        });
+        if (_chosenCompany != null){
+          var ref2 = FirebaseFirestore.instance.collection("company")
+              .doc();
+          Company company = Company();
+          company.timeStamp = FieldValue.serverTimestamp();
+          company.companyID = "${_chosenCompany}:2";
+          company.name = _chosenCompany;
+          company.itemName = "None";
+          (_chosenCash == "Deposit")? company.itemStatus = "Taken": company.itemStatus = "Given";
+          company.itemPrice = cashEditingController.text;
+          company.itemQuantity = "1";
+          company.docID = ref.id;
+          ref2.set(company.toMap()).whenComplete(() {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                    "Entry Successful!!")));
+            setState(() {
+              _process = false;
+              _count = 1;
+              _chosenCompany = null;
+              if(_chosenCash == "Deposit"){
+                _totalAmount = _totalAmount + int.parse(cashEditingController.text);
+                cashEditingController.clear();
+                reasonEditingController.clear();
+                _chosenCash = null;
+              }else{
+                _totalAmount = _totalAmount - int.parse(cashEditingController.text);
+                cashEditingController.clear();
+                reasonEditingController.clear();
+                _chosenCash = null;
+              }
+            });
+
+          });
+        }
+
       }).onError((error, stackTrace) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red,

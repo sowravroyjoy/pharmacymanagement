@@ -61,6 +61,7 @@ class _HomeDesktopState extends State<HomeDesktop> {
                     children: [
                       getImageButton(() {Navigator.pushNamed(context, MyRoutes.addExpense);}, 'assets/images/storage.jpg', "Add Expenses"),
                       getImageButton(() { Navigator.pushNamed(context, MyRoutes.expenseHistory);}, 'assets/images/storage.jpg', "Expense History"),
+                      getImageButton(() { Navigator.pushNamed(context, MyRoutes.allCompany);}, 'assets/images/storage.jpg', "All Company"),
                     ],
                   ),
                   SizedBox(height: 40,),
